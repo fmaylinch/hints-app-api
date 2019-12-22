@@ -5,7 +5,9 @@ API Server for the HintsApp.
 
 ## Creation of the project
 
-I followed [Quarkus Getting Started](https://quarkus.io/guides/getting-started).
+I followed these guides:
+- [Quarkus Getting Started](https://quarkus.io/guides/getting-started)
+- [MongoDB guide](https://quarkus.io/guides/mongodb)
 
 ## Running the application
 
