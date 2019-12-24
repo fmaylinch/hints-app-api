@@ -14,20 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO: This resource ignores HTTP methods and only uses {@link POST}.
- *  More details about this idea: https://softwareengineering.stackexchange.com/a/402901/353567
+ * Manages HintCards
+ *
+ * This API ignores HTTP methods and only uses {@link POST}.
+ * More details about this idea: https://softwareengineering.stackexchange.com/a/402901/353567
  */
-
 @Path("/cards")
 @Produces(MediaType.APPLICATION_JSON)
-public class HintCardsResource {
+public class HintCardsApi {
 
     private final MongoCollection<Document> collection;
 
     // TODO: MongoClient is provided by the quarkus-mongodb-client dependency,
     //  but maybe we should add the official mongodb dependency and configure this manually.
     //  I could also use Spring Mongo support, which does automatic mapping.
-    public HintCardsResource(MongoClient mongoClient) {
+    public HintCardsApi(MongoClient mongoClient) {
         collection = mongoClient.getDatabase("hintsapp").getCollection("cards");
     }
 
