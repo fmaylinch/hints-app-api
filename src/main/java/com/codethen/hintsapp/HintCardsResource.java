@@ -3,11 +3,9 @@ package com.codethen.hintsapp;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -15,8 +13,12 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TODO: This resource ignores HTTP methods and only uses {@link POST}.
+ *  More details about this idea: https://softwareengineering.stackexchange.com/a/402901/353567
+ */
+
 @Path("/cards")
-@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class HintCardsResource {
 
@@ -29,7 +31,7 @@ public class HintCardsResource {
         collection = mongoClient.getDatabase("hintsapp").getCollection("cards");
     }
 
-    @GET
+    @POST @Path("getAll")
     public List<HintCard> getAll() {
 
         final List<HintCard> result = new ArrayList<>();
@@ -44,15 +46,17 @@ public class HintCardsResource {
         }
     }
 
-    @GET @Path("/{id}")
-    public HintCard getOne(@PathParam String id) {
+    @POST @Path("/getOne")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public HintCard getOne(String id) {
 
         final Document doc = collection.find(byId(id)).first();
         return HintsCardMongoAdapter.from(doc);
     }
 
-    @DELETE @Path("/{id}")
-    public HintCard deleteOne(@PathParam String id) {
+    @POST @Path("/deleteOne")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public HintCard deleteOne(String id) {
 
         final HintCard card = getOne(id);
         if (card != null) {
@@ -62,7 +66,8 @@ public class HintCardsResource {
         return card;
     }
 
-    @POST
+    @POST @Path("/saveOrUpdate")
+    @Consumes(MediaType.APPLICATION_JSON)
     public HintCard saveOrUpdate(HintCard card) {
 
         if (card.getHints() == null || card.getHints().isEmpty())
@@ -71,8 +76,11 @@ public class HintCardsResource {
         final Document doc = HintsCardMongoAdapter.from(card);
         assert doc != null;
 
+        // TODO: I think we could do this for both cases (can we then retrieve the _id?)
+        // collection.updateOne(byId(card.getId()), new Document("$set", doc), new UpdateOptions().upsert(true));
+
         if (card.getId() != null) {
-            collection.updateOne(byId(card.getId()), doc);
+            collection.updateOne(byId(card.getId()), new Document("$set", doc));
         } else {
             collection.insertOne(doc);
             card.setId(doc.getObjectId("_id").toString());
