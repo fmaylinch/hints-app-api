@@ -1,11 +1,11 @@
 package com.codethen.hintsapp;
 
+import com.codethen.hintsapp.MongoUtil.CommonFields;
+import com.codethen.hintsapp.MongoUtil.Ops;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -13,13 +13,16 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.codethen.hintsapp.HintsCardMongoAdapter.sortByFirstHint;
+import static com.codethen.hintsapp.MongoUtil.byId;
+
 /**
  * Manages HintCards
  *
  * This API ignores HTTP methods and only uses {@link POST}.
  * More details about this idea: https://softwareengineering.stackexchange.com/a/402901/353567
  */
-@Path("/cards")
+@Path("cards")
 @Produces(MediaType.APPLICATION_JSON)
 public class HintCardsApi {
 
@@ -37,7 +40,7 @@ public class HintCardsApi {
 
         final List<HintCard> result = new ArrayList<>();
 
-        try (MongoCursor<Document> cursor = collection.find().iterator()) {
+        try (MongoCursor<Document> cursor = collection.find().sort(sortByFirstHint()).iterator()) {
             while (cursor.hasNext()) {
                 final Document doc = cursor.next();
                 final HintCard card = HintsCardMongoAdapter.from(doc);
@@ -47,7 +50,7 @@ public class HintCardsApi {
         }
     }
 
-    @POST @Path("/getOne")
+    @POST @Path("getOne")
     @Consumes(MediaType.TEXT_PLAIN)
     public HintCard getOne(String id) {
 
@@ -55,7 +58,7 @@ public class HintCardsApi {
         return HintsCardMongoAdapter.from(doc);
     }
 
-    @POST @Path("/deleteOne")
+    @POST @Path("deleteOne")
     @Consumes(MediaType.TEXT_PLAIN)
     public HintCard deleteOne(String id) {
 
@@ -67,7 +70,7 @@ public class HintCardsApi {
         return card;
     }
 
-    @POST @Path("/saveOrUpdate")
+    @POST @Path("saveOrUpdate")
     @Consumes(MediaType.APPLICATION_JSON)
     public HintCard saveOrUpdate(HintCard card) {
 
@@ -78,19 +81,15 @@ public class HintCardsApi {
         assert doc != null;
 
         // TODO: I think we could do this for both cases (can we then retrieve the _id?)
-        // collection.updateOne(byId(card.getId()), new Document("$set", doc), new UpdateOptions().upsert(true));
+        // collection.updateOne(byId(card.getId()), new Document(Ops.set, doc), new UpdateOptions().upsert(true));
 
         if (card.getId() != null) {
-            collection.updateOne(byId(card.getId()), new Document("$set", doc));
+            collection.updateOne(byId(card.getId()), new Document(Ops.set, doc));
         } else {
             collection.insertOne(doc);
-            card.setId(doc.getObjectId("_id").toString());
+            card.setId(doc.getObjectId(CommonFields._id).toString());
         }
 
         return card;
-    }
-
-    private Bson byId(String id) {
-        return new Document("_id", new ObjectId(id));
     }
 }
