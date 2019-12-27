@@ -5,6 +5,7 @@ import java.util.List;
 public class HintCard {
 
     private String id;
+    private int score;
     private List<String> hints;
     private String notes;
 
@@ -14,6 +15,14 @@ public class HintCard {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public List<String> getHints() {

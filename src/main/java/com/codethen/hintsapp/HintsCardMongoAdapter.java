@@ -12,6 +12,7 @@ public class HintsCardMongoAdapter {
     private static class Fields {
         /** Used to sort. See {@link #sortByFirstHint}. */
         public static String hint1 = "hint1";
+        public static String score = "score";
         public static String hints = "hints";
         public static String notes = "notes";
     }
@@ -23,6 +24,7 @@ public class HintsCardMongoAdapter {
 
         final HintCard card = new HintCard();
         card.setId( doc.getObjectId(CommonFields._id).toString() );
+        card.setScore( doc.getInteger(Fields.score) );
         card.setHints( doc.getList(Fields.hints, String.class) );
         card.setNotes( doc.getString(Fields.notes) );
         return card;
@@ -34,6 +36,7 @@ public class HintsCardMongoAdapter {
         if (card == null) return null;
 
         return doc()
+                .append(Fields.score, card.getScore())
                 .append(Fields.hint1, card.getHints().get(0))
                 .append(Fields.hints, card.getHints())
                 .append(Fields.notes, card.getNotes());
