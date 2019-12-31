@@ -14,6 +14,7 @@ public class HintsCardMongoAdapter {
         public static String score = "score";
         public static String hints = "hints";
         public static String notes = "notes";
+        public static String tags = "tags";
     }
 
     @Nullable
@@ -26,6 +27,7 @@ public class HintsCardMongoAdapter {
         card.setScore( doc.getInteger(Fields.score) );
         card.setHints( doc.getList(Fields.hints, String.class) );
         card.setNotes( doc.getString(Fields.notes) );
+        card.setTags( doc.getList(Fields.tags, String.class) );
         return card;
     }
 
@@ -37,7 +39,8 @@ public class HintsCardMongoAdapter {
         return doc()
                 .append(Fields.score, card.getScore())
                 .append(Fields.hints, card.getHints())
-                .append(Fields.notes, card.getNotes());
+                .append(Fields.notes, card.getNotes())
+                .append(Fields.tags, card.getTags());
     }
 
     public static Bson sortByFirstHint() {
