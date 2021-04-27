@@ -10,7 +10,6 @@ import static com.codethen.hintsapp.MongoUtil.doc;
 public class HintsCardMongoAdapter {
 
     private static class Fields {
-        /** Used to sort. See {@link #sortByFirstHint}. */
         public static String score = "score";
         public static String hints = "hints";
         public static String notes = "notes";
