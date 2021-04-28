@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static com.codethen.hintsapp.security.UserMongoAdapter.byEmail;
+import static com.codethen.hintsapp.security.UserAdapter.byEmail;
 
 @Path("security")
 @Produces(MediaType.APPLICATION_JSON)
@@ -34,7 +34,7 @@ public class SecurityApi {
     public User login(Login login) {
 
         final Document doc = users.find(byEmail(login.getEmail())).first();
-        final User user = UserMongoAdapter.from(doc);
+        final User user = UserAdapter.from(doc);
 
         if (user == null) {
             throw new WebApplicationException("User not found", Response.Status.UNAUTHORIZED);

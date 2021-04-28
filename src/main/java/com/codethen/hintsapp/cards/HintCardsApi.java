@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.codethen.hintsapp.cards.HintsCardMongoAdapter.sortByFirstHint;
+import static com.codethen.hintsapp.cards.HintCardAdapter.sortByFirstHint;
 import static com.codethen.hintsapp.MongoUtil.byId;
 
 /**
@@ -43,7 +43,7 @@ public class HintCardsApi {
         try (MongoCursor<Document> cursor = collection.find().sort(sortByFirstHint()).iterator()) {
             while (cursor.hasNext()) {
                 final Document doc = cursor.next();
-                final HintCard card = HintsCardMongoAdapter.from(doc);
+                final HintCard card = HintCardAdapter.from(doc);
                 result.add(card);
             }
             return result;
@@ -55,7 +55,7 @@ public class HintCardsApi {
     public HintCard getOne(String id) {
 
         final Document doc = collection.find(byId(id)).first();
-        return HintsCardMongoAdapter.from(doc);
+        return HintCardAdapter.from(doc);
     }
 
     @POST @Path("deleteOne")
@@ -77,7 +77,7 @@ public class HintCardsApi {
         if (card.getHints() == null || card.getHints().isEmpty())
             throw new WebApplicationException("At least one hint is required", Response.Status.BAD_REQUEST);
 
-        final Document doc = HintsCardMongoAdapter.from(card);
+        final Document doc = HintCardAdapter.from(card);
         assert doc != null;
 
         // TODO: I think we could do this for both cases (can we then retrieve the _id?)

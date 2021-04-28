@@ -6,7 +6,7 @@ import org.bson.Document;
 
 import static com.codethen.hintsapp.MongoUtil.doc;
 
-public class UserMongoAdapter {
+public class UserAdapter {
 
     private static class Fields {
         public static String email = "email";

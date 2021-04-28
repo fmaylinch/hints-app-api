@@ -7,7 +7,7 @@ import org.bson.conversions.Bson;
 
 import static com.codethen.hintsapp.MongoUtil.doc;
 
-public class HintsCardMongoAdapter {
+public class HintCardAdapter {
 
     private static class Fields {
         public static String score = "score";
