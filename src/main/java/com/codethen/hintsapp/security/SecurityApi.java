@@ -1,5 +1,6 @@
 package com.codethen.hintsapp.security;
 
+import com.codethen.hintsapp.MongoUtil;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import io.smallrye.jwt.build.Jwt;
@@ -30,13 +31,17 @@ public class SecurityApi {
 
     @POST
     @Path("login")
-    public User login(Login login) {
+    public User loginOrRegister(Login login) {
 
         final Document doc = users.find(byEmail(login.getEmail())).first();
-        final User user = UserAdapter.from(doc);
+        User user = UserAdapter.from(doc);
 
         if (user == null) {
-            throw new WebApplicationException("User not found", Response.Status.UNAUTHORIZED);
+            if (hasInfoToRegister(login)) {
+                user = register(login);
+            } else {
+                throw new WebApplicationException("User not found", Response.Status.UNAUTHORIZED);
+            }
         }
 
         // TODO: encrypt password
@@ -52,9 +57,24 @@ public class SecurityApi {
                         .expiresIn(Duration.ofDays(30))
                         .sign();
 
-        // TODO: for now, reuse password field to send token
-        user.setPassword(token);
+        user.setPassword(token); // We return the token instead of password
         return user;
     }
 
+    private boolean hasInfoToRegister(Login login) {
+        return login.getPassword() != null
+                && login.getPassword().length() >= 5
+                && login.getPassword().equals(login.getPassword2());
+    }
+
+    private User register(Login login) {
+        final User user = User.builder()
+                .email(login.getEmail())
+                .password(login.getPassword())
+                .build();
+        final Document doc = UserAdapter.from(user);
+        users.insertOne(doc);
+        user.setId(doc.getObjectId(MongoUtil.CommonFields._id).toString());
+        return user;
+    }
 }
