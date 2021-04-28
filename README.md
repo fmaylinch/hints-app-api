@@ -20,6 +20,7 @@ See [development mode](https://quarkus.io/guides/getting-started#development-mod
 See [Dockerfile.jvm](./src/main/docker/Dockerfile.jvm) on how to build and run with Docker.
 
 ## Sample calls
+
 ```bash
 # Login to get JWT
 curl -X POST \
@@ -38,3 +39,5 @@ curl -X POST \
   -H "Authorization: Bearer $JWT" \
   http://127.0.0.1:8090/cards/getAll | jq
 ```
+
+See about [curl options](https://gist.github.com/subfuzion/08c5d85437d5d4f00e58).
