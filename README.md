@@ -18,3 +18,23 @@ Then you can attach debugger on port `5005`.
 See [development mode](https://quarkus.io/guides/getting-started#development-mode). 
 
 See [Dockerfile.jvm](./src/main/docker/Dockerfile.jvm) on how to build and run with Docker.
+
+## Sample calls
+```bash
+# Login to get JWT
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"email":"some@email.com", "password":"the-pwd"}' \
+  http://127.0.0.1:8090/security/login | jq
+
+# Same command, but sets JWT variable with the token
+JWT=$(curl -X POST --silent \
+  -H "Content-Type: application/json" \
+  -d '{"email":"some@email.com", "password":"the-pwd"}' \
+  http://127.0.0.1:8090/security/login | jq -r .password)
+
+# Get all cards using JWT
+curl -X POST \
+  -H "Authorization: Bearer $JWT" \
+  http://127.0.0.1:8090/cards/getAll | jq
+```

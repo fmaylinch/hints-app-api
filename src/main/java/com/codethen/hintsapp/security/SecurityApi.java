@@ -13,8 +13,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Set;
 
 import static com.codethen.hintsapp.security.UserAdapter.byEmail;
 
@@ -45,10 +44,10 @@ public class SecurityApi {
             throw new WebApplicationException("Wrong password", Response.Status.UNAUTHORIZED);
         }
 
-        String token =
+        final String token =
                 Jwt.issuer("https://example.com/issuer")
                         .upn(user.getId())
-                        .groups(new HashSet<>(Arrays.asList("User")))
+                        .groups(Set.of(Roles.USER))
                         .claim(Claims.email.name(), login.getEmail())
                         .expiresIn(Duration.ofDays(30))
                         .sign();

@@ -10,6 +10,7 @@ import java.util.List;
 public class HintCard {
 
     String id;
+    String userId;
     /** From 0 to 100 */
     int score;
     /** Contains at least one element */
