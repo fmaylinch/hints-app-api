@@ -19,23 +19,19 @@ public class HintCardAdapter {
     @Nullable
     public static HintCard from(@Nullable Document doc) {
 
-        if (doc == null) return null;
-
-        final HintCard card = new HintCard();
-        card.setId( doc.getObjectId(CommonFields._id).toString() );
-        card.setScore( doc.getInteger(Fields.score) );
-        card.setHints( doc.getList(Fields.hints, String.class) );
-        card.setNotes( doc.getString(Fields.notes) );
-        card.setTags( doc.getList(Fields.tags, String.class) );
-        return card;
+        return doc == null ? null : HintCard.builder()
+                .id( doc.getObjectId(CommonFields._id).toString() )
+                .score( doc.getInteger(Fields.score) )
+                .hints( doc.getList(Fields.hints, String.class) )
+                .notes( doc.getString(Fields.notes) )
+                .tags( doc.getList(Fields.tags, String.class) )
+                .build();
     }
 
     @Nullable
     public static Document from(@Nullable HintCard card) {
 
-        if (card == null) return null;
-
-        return doc()
+        return card == null ? null : doc()
                 .append(Fields.score, card.getScore())
                 .append(Fields.hints, card.getHints())
                 .append(Fields.notes, card.getNotes())

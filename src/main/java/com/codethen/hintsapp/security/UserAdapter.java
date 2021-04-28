@@ -20,21 +20,17 @@ public class UserAdapter {
     @Nullable
     public static User from(@Nullable Document doc) {
 
-        if (doc == null) return null;
-
-        final User user = new User();
-        user.setId( doc.getObjectId(CommonFields._id).toString() );
-        user.setEmail( doc.getString(Fields.email) );
-        user.setPassword( doc.getString(Fields.password) );
-        return user;
+        return doc == null ? null : User.builder()
+                .id(doc.getObjectId(CommonFields._id).toString())
+                .email(doc.getString(Fields.email))
+                .password(doc.getString(Fields.password))
+                .build();
     }
 
     @Nullable
     public static Document from(@Nullable User user) {
 
-        if (user == null) return null;
-
-        return doc()
+        return user == null ? null : doc()
                 .append(Fields.email, user.getEmail())
                 .append(Fields.password, user.getPassword());
     }
