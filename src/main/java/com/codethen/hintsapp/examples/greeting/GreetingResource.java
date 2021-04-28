@@ -1,4 +1,4 @@
-package com.codethen.hintsapp;
+package com.codethen.hintsapp.examples.greeting;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;

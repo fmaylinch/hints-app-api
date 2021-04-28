@@ -1,4 +1,4 @@
-package com.codethen.hintsapp;
+package com.codethen.hintsapp.security;
 
 import com.codethen.hintsapp.MongoUtil.CommonFields;
 import com.mongodb.lang.Nullable;

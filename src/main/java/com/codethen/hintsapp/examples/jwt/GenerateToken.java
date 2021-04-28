@@ -1,4 +1,4 @@
-package com.codethen.hintsapp;
+package com.codethen.hintsapp.examples.jwt;
 
 import java.time.Duration;
 import java.util.Arrays;

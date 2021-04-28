@@ -1,4 +1,4 @@
-package com.codethen.hintsapp;
+package com.codethen.hintsapp.cards;
 
 import com.codethen.hintsapp.MongoUtil.CommonFields;
 import com.codethen.hintsapp.MongoUtil.Ops;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.codethen.hintsapp.HintsCardMongoAdapter.sortByFirstHint;
+import static com.codethen.hintsapp.cards.HintsCardMongoAdapter.sortByFirstHint;
 import static com.codethen.hintsapp.MongoUtil.byId;
 
 /**

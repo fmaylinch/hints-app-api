@@ -1,4 +1,4 @@
-package com.codethen.hintsapp;
+package com.codethen.hintsapp.security;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static com.codethen.hintsapp.UserMongoAdapter.byEmail;
+import static com.codethen.hintsapp.security.UserMongoAdapter.byEmail;
 
 @Path("security")
 @Produces(MediaType.APPLICATION_JSON)

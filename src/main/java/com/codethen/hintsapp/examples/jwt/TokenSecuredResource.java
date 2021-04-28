@@ -1,4 +1,4 @@
-package com.codethen.hintsapp;
+package com.codethen.hintsapp.examples.jwt;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
