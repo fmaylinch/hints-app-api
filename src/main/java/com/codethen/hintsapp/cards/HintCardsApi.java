@@ -31,13 +31,13 @@ import static com.codethen.hintsapp.cards.HintCardAdapter.*;
 @Produces(MediaType.APPLICATION_JSON)
 public class HintCardsApi {
 
-    private final MongoCollection<Document> collection;
+    private final MongoCollection<Document> cards;
 
     // TODO: MongoClient is provided by the quarkus-mongodb-client dependency,
     //  but maybe we should add the official mongodb dependency and configure this manually.
     //  I could also use Spring Mongo support, which does automatic mapping.
     public HintCardsApi(MongoClient mongoClient) {
-        collection = mongoClient.getDatabase("hintsapp").getCollection("cards");
+        cards = mongoClient.getDatabase("hintsapp").getCollection("cards");
     }
 
     @POST @Path("getAll")
@@ -47,7 +47,7 @@ public class HintCardsApi {
         final String userId = getUserId(ctx);
 
         return MongoUtil.iterableToList(
-                collection.find(byUserId(userId)).sort(sortByFirstHint()),
+                cards.find(byUserId(userId)).sort(sortByFirstHint()),
                 HintCardAdapter::from);
     }
 
@@ -56,7 +56,7 @@ public class HintCardsApi {
     @Consumes(MediaType.TEXT_PLAIN)
     public HintCard getOne(@Context SecurityContext ctx, String id) {
 
-        final Document doc = collection.find(byIdAndUserId(id, getUserId(ctx))).first();
+        final Document doc = cards.find(byIdAndUserId(id, getUserId(ctx))).first();
         return HintCardAdapter.from(doc);
     }
 
@@ -67,7 +67,7 @@ public class HintCardsApi {
 
         final HintCard card = getOne(ctx, id);
         if (card != null) {
-            collection.deleteOne(byIdAndUserId(id, getUserId(ctx)));
+            cards.deleteOne(byIdAndUserId(id, getUserId(ctx)));
         }
 
         return card;
@@ -90,9 +90,9 @@ public class HintCardsApi {
         // collection.updateOne(byId(card.getId()), new Document(Ops.set, doc), new UpdateOptions().upsert(true));
 
         if (card.getId() != null) {
-            collection.updateOne(byIdAndUserId(card.getId(), userId), new Document(Ops.set, doc));
+            cards.updateOne(byIdAndUserId(card.getId(), userId), new Document(Ops.set, doc));
         } else {
-            collection.insertOne(doc);
+            cards.insertOne(doc);
             card.setId(doc.getObjectId(CommonFields._id).toString());
         }
 
