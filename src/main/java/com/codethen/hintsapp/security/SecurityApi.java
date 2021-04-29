@@ -1,5 +1,6 @@
 package com.codethen.hintsapp.security;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.codethen.hintsapp.MongoUtil;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -44,8 +45,7 @@ public class SecurityApi {
             }
         }
 
-        // TODO: encrypt password
-        if (!user.getPassword().equals(login.getPassword())) {
+        if (!isPasswordCorrect(login.getPassword(), user.getPassword())) {
             throw new WebApplicationException("Wrong password", Response.Status.UNAUTHORIZED);
         }
 
@@ -68,13 +68,22 @@ public class SecurityApi {
     }
 
     private User register(Login login) {
+
+        final String hashedPwd = BCrypt.withDefaults().hashToString(12, login.getPassword().toCharArray());
+
         final User user = User.builder()
                 .email(login.getEmail())
-                .password(login.getPassword())
+                .password(hashedPwd)
                 .build();
+
         final Document doc = UserAdapter.from(user);
         users.insertOne(doc);
         user.setId(doc.getObjectId(MongoUtil.CommonFields._id).toString());
+
         return user;
+    }
+
+    private boolean isPasswordCorrect(String clearPassword, String hashedPassword) {
+        return BCrypt.verifyer().verify(clearPassword.toCharArray(), hashedPassword).verified;
     }
 }
