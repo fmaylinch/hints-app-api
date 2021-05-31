@@ -1,7 +1,5 @@
 package com.codethen.hintsapp;
 
-import com.codethen.hintsapp.cards.HintCard;
-import com.codethen.hintsapp.cards.HintCardAdapter;
 import com.mongodb.Function;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;

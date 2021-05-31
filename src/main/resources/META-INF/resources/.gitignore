@@ -1,6 +1,3 @@
-# Ignore generated flutter web folder
-web/
-
 # Ignore files copied from Vue dist folder
 css/
 js/

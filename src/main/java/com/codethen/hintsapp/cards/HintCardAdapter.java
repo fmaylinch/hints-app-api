@@ -3,7 +3,6 @@ package com.codethen.hintsapp.cards;
 import com.codethen.hintsapp.MongoUtil.CommonFields;
 import com.mongodb.lang.Nullable;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import static com.codethen.hintsapp.MongoUtil.doc;
@@ -47,7 +46,7 @@ public class HintCardAdapter {
     }
 
     public static Document byIdAndUserId(String id, String userId) {
-        return doc(CommonFields._id, new ObjectId(id)).append(Fields.userId, new ObjectId(userId));
+        return byUserId(userId).append(CommonFields._id, new ObjectId(id));
     }
 
     public static Document sortByFirstHint() {
