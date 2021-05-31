@@ -1,6 +1,5 @@
 package com.codethen.hintsapp.security;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.codethen.hintsapp.MongoUtil;
 import com.codethen.hintsapp.cards.HintCard;
 import com.codethen.hintsapp.cards.HintCardAdapter;
@@ -11,6 +10,7 @@ import io.smallrye.jwt.build.Jwt;
 import org.bson.Document;
 import org.eclipse.microprofile.jwt.Claims;
 
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -29,6 +29,9 @@ public class SecurityApi {
 
     private final MongoCollection<Document> users;
     private final MongoCollection<Document> cards;
+
+    @Inject
+    PasswordEncoder passwordEncoder;
 
     public SecurityApi(MongoClient mongoClient) {
         final MongoDatabase database = mongoClient.getDatabase("hintsapp");
@@ -52,7 +55,7 @@ public class SecurityApi {
             }
         }
 
-        if (!isPasswordCorrect(login.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.verify(login.getPassword(), user.getPassword())) {
             throw new WebApplicationException("Wrong password", Response.Status.UNAUTHORIZED);
         }
 
@@ -76,7 +79,7 @@ public class SecurityApi {
 
     private User register(Login login) {
 
-        final String hashedPwd = BCrypt.withDefaults().hashToString(12, login.getPassword().toCharArray());
+        final String hashedPwd = passwordEncoder.encode(login.getPassword());
 
         final User user = User.builder()
                 .email(login.getEmail())
@@ -110,9 +113,5 @@ public class SecurityApi {
                 .build();
 
         cards.insertOne(HintCardAdapter.from(card));
-    }
-
-    private boolean isPasswordCorrect(String clearPassword, String hashedPassword) {
-        return BCrypt.verifyer().verify(clearPassword.toCharArray(), hashedPassword).verified;
     }
 }
